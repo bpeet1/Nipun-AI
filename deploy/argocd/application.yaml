@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/bpeet1/Nipun-AI.git
-    targetRevision: d470eeb1a6b327c413659df54f11f96a264ca342
+    targetRevision: refs/heads/copilot/nipun-ai-k8s-argo-renovate
     path: deploy/k8s/overlays/prod
   destination:
     server: https://kubernetes.default.svc
