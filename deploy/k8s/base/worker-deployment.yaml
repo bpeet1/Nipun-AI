@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nipun-ai-worker
+  namespace: nipun-ai
+  labels:
+    app.kubernetes.io/name: nipun-ai-worker
+    app.kubernetes.io/part-of: nipun-ai
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nipun-ai-worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nipun-ai-worker
+        app.kubernetes.io/part-of: nipun-ai
+    spec:
+      containers:
+        - name: worker
+          image: node:20-bookworm-slim
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8787
+              name: http
+          env:
+            - name: NIPUN_REPO
+              value: https://github.com/myProjectsRavi/Nipun-AI.git
+            - name: NIPUN_REF
+              value: main
+            - name: ALLOWED_ORIGINS
+              value: http://10.0.0.220
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              apt-get update -qq >/dev/null
+              apt-get install -y --no-install-recommends git ca-certificates >/dev/null
+              mkdir -p /opt/nipun
+              if [ ! -d /opt/nipun/repo/.git ]; then
+                git clone --depth 1 "${NIPUN_REPO}" /opt/nipun/repo
+              fi
+              cd /opt/nipun/repo
+              git fetch --depth 1 origin "${NIPUN_REF}"
+              git checkout -f FETCH_HEAD
+              cd worker
+              npm ci --silent
+              exec npx wrangler dev --local --ip 0.0.0.0 --port 8787 --var "ALLOWED_ORIGINS:${ALLOWED_ORIGINS}" --var "DEMO_ONLY:false"
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            failureThreshold: 40
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 2Gi

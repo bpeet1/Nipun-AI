@@ -1,0 +1,42 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "timezone": "UTC",
+  "schedule": [
+    "before 6am on monday"
+  ],
+  "dependencyDashboard": true,
+  "enabledManagers": [
+    "npm",
+    "github-actions",
+    "dockerfile",
+    "kubernetes"
+  ],
+  "kubernetes": {
+    "fileMatch": [
+      "^deploy/k8s/.+\\.ya?ml$"
+    ]
+  },
+  "packageRules": [
+    {
+      "matchManagers": [
+        "kubernetes",
+        "dockerfile"
+      ],
+      "groupName": "k8s-runtime-images"
+    },
+    {
+      "matchManagers": [
+        "npm"
+      ],
+      "groupName": "npm-dependencies",
+      "rangeStrategy": "replace"
+    }
+  ]
+}
+
