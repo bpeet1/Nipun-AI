@@ -1,7 +1,7 @@
 import type { AuditResult, AuditClaim, FinancialData } from './types';
 
 /**
- * Phase 4 — Send draft report + sources to Cohere Command R+
+ * Phase 4 — Send draft report + sources to Cohere Chat v2
  * for RAG-based fact auditing. Each claim is classified as
  * grounded, speculative, or unverifiable.
  */
@@ -27,7 +27,7 @@ export async function auditReport(
             'X-Client-Name': 'NipunAI',
         },
         body: JSON.stringify({
-            model: 'command-r-plus',
+            model: 'command-a-03-2025',
             messages: [
                 {
                     role: 'system',
@@ -50,7 +50,7 @@ Return ONLY a JSON object:
             ],
             documents: sourceDocuments.map((d) => ({
                 id: d.id,
-                data: { title: d.title, snippet: d.text },
+                data: { text: `${d.title}\n${d.text}` },
             })),
             temperature: 0.1,
         }),

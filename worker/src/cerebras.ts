@@ -3,7 +3,7 @@ import type { AIConsensus, FinancialData, SentimentResult, RiskFactor, Catalyst 
 const CEREBRAS_BASE = 'https://api.cerebras.ai/v1/chat/completions';
 
 /**
- * Generate a second independent AI verdict using Cerebras (Llama 4).
+ * Generate a second independent AI verdict using Cerebras.
  * This is compared with Gemini's synthesis to produce a consensus score.
  */
 export async function generateSecondOpinion(
@@ -42,7 +42,7 @@ Respond in this EXACT JSON format:
             'Authorization': `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-            model: 'llama-3.3-70b',
+            model: 'gpt-oss-120b',
             messages: [
                 { role: 'system', content: 'You are a contrarian financial analyst who provides independent, data-driven opinions. Always respond with valid JSON.' },
                 { role: 'user', content: prompt },
@@ -95,12 +95,12 @@ Respond in this EXACT JSON format:
 
     const consensusSummary = agree
         ? `Both AI models agree on a ${geminiVerdict} outlook (${agreementScore}% agreement). ${parsed.keyReasons?.[0] || ''}`
-        : `AI models diverge: Gemini is ${geminiVerdict} while Cerebras (Llama 4) is ${secondaryVerdict}. Key disagreement: ${divergences[0] || 'Different weighting of risk factors.'}`;
+        : `AI models diverge: Gemini is ${geminiVerdict} while Cerebras is ${secondaryVerdict}. Key disagreement: ${divergences[0] || 'Different weighting of risk factors.'}`;
 
     return {
         geminiVerdict,
         secondaryVerdict,
-        secondaryModel: 'Cerebras Llama 3.3 70B',
+        secondaryModel: 'Cerebras GPT OSS 120B',
         agreementScore,
         divergences,
         consensusSummary,
