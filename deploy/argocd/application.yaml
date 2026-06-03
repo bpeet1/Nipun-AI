@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nipun-ai
+  namespace: default
+  labels:
+    app.kubernetes.io/part-of: nipun-ai
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/bpeet1/Nipun-AI.git
+    targetRevision: refs/heads/copilot/nipun-ai-k8s-argo-renovate
+    path: deploy/k8s/overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nipun-ai
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

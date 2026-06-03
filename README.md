@@ -77,6 +77,30 @@ Open `http://localhost:5173` → Enter API keys → Analyze any stock ticker.
 
 ---
 
+## ☸️ Kubernetes + Argo CD Deployment
+
+This repository now includes production manifests under `deploy/k8s/` and an Argo CD application manifest at `deploy/argocd/application.yaml`.
+
+1. Apply Kubernetes resources:
+```bash
+kubectl apply -k deploy/k8s/overlays/prod
+```
+
+2. Register with Argo CD:
+```bash
+kubectl apply -f deploy/argocd/application.yaml
+```
+
+3. Access app/API via shared static IP `10.0.0.220`:
+- Frontend: `https://10.0.0.220`
+- Worker API: `https://10.0.0.220/analyze` and `https://10.0.0.220/health`
+
+The TLS certificate is self-signed (issued by cert-manager), so browsers will show an untrusted certificate warning until you trust the cert in your local trust store.
+
+The deployment tracks the official repo (`https://github.com/myProjectsRavi/Nipun-AI`) and uses Renovate (`renovate.json` + `.github/workflows/renovate.yml`) for automated dependency/runtime image updates.
+
+---
+
 ## ☕ Support
 
 Nipun AI is free, open-source, and always will be. If it's useful to you, a coffee is appreciated - never expected.

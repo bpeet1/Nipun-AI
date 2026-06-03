@@ -1,0 +1,24 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: nipun-ai-tls
+  namespace: nipun-ai
+spec:
+  secretName: nipun-ai-tls
+  duration: 2160h
+  renewBefore: 720h
+  subject:
+    organizations:
+      - Nipun-AI
+  commonName: nipun-ai.local
+  dnsNames:
+    - nipun-ai.local
+  ipAddresses:
+    - 10.0.0.220
+  privateKey:
+    algorithm: RSA
+    size: 2048
+  issuerRef:
+    kind: Issuer
+    name: nipun-ai-selfsigned
+
