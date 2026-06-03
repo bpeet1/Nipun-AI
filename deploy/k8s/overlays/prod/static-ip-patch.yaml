@@ -1,16 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nipun-ai-frontend
+  name: nipun-ai-gateway
   namespace: nipun-ai
 spec:
   loadBalancerIP: 10.0.0.220
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nipun-ai-worker
-  namespace: nipun-ai
-spec:
-  loadBalancerIP: 10.0.0.220
-

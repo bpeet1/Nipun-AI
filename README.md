@@ -92,8 +92,10 @@ kubectl apply -f deploy/argocd/application.yaml
 ```
 
 3. Access app/API via shared static IP `10.0.0.220`:
-- Frontend: `http://10.0.0.220`
-- Worker API: `http://10.0.0.220:8787`
+- Frontend: `https://10.0.0.220`
+- Worker API: `https://10.0.0.220/analyze` and `https://10.0.0.220/health`
+
+The TLS certificate is self-signed (issued by cert-manager), so browsers will show an untrusted certificate warning until you trust the cert in your local trust store.
 
 The deployment tracks the official repo (`https://github.com/myProjectsRavi/Nipun-AI`) and uses Renovate (`renovate.json` + `.github/workflows/renovate.yml`) for automated dependency/runtime image updates.
 

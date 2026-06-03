@@ -30,7 +30,7 @@ spec:
             - name: NIPUN_REF
               value: main
             - name: ALLOWED_ORIGINS
-              value: http://10.0.0.220
+              value: https://10.0.0.220
           command:
             - /bin/sh
             - -ec

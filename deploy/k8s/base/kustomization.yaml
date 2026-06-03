@@ -2,8 +2,12 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - namespace.yaml
+  - cert-issuer.yaml
+  - certificate.yaml
   - worker-deployment.yaml
   - worker-service.yaml
   - frontend-deployment.yaml
   - frontend-service.yaml
-
+  - gateway-configmap.yaml
+  - gateway-deployment.yaml
+  - gateway-service.yaml

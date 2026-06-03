@@ -9,7 +9,7 @@ metadata:
     app.kubernetes.io/name: nipun-ai-frontend
     app.kubernetes.io/part-of: nipun-ai
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app.kubernetes.io/name: nipun-ai-frontend
   ports:
@@ -17,4 +17,3 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 5173
-
