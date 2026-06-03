@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tradingagents-terminal
+  namespace: tradingagents
+  labels:
+    app.kubernetes.io/name: tradingagents-terminal
+    app.kubernetes.io/part-of: tradingagents
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tradingagents-terminal
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: tradingagents-terminal
+        app.kubernetes.io/part-of: tradingagents
+    spec:
+      containers:
+        - name: terminal
+          image: python:3.12-slim
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 7681
+          env:
+            - name: TRADINGAGENTS_REPO
+              value: https://github.com/tauricresearch/tradingagents.git
+            - name: TRADINGAGENTS_REF
+              value: main
+          envFrom:
+            - secretRef:
+                name: tradingagents-secrets
+                optional: true
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              export DEBIAN_FRONTEND=noninteractive
+              apt-get update -qq >/dev/null
+              apt-get install -y --no-install-recommends git ca-certificates curl >/dev/null
+              TTYD_VERSION=1.7.7
+              ARCH="$(uname -m)"
+              if [ "${ARCH}" = "x86_64" ]; then
+                TTYD_ARCH="x86_64"
+              elif [ "${ARCH}" = "aarch64" ]; then
+                TTYD_ARCH="aarch64"
+              else
+                echo "Unsupported arch for ttyd: ${ARCH}" >&2
+                exit 1
+              fi
+              curl -fsSL -o /usr/local/bin/ttyd "https://github.com/tsl0922/ttyd/releases/download/${TTYD_VERSION}/ttyd.${TTYD_ARCH}"
+              chmod +x /usr/local/bin/ttyd
+              mkdir -p /opt/tradingagents /opt/venv /home/appuser/.tradingagents
+              if [ ! -d /opt/tradingagents/.git ]; then
+                git clone --depth 1 "${TRADINGAGENTS_REPO}" /opt/tradingagents
+              fi
+              cd /opt/tradingagents
+              git fetch --depth 1 origin "${TRADINGAGENTS_REF}"
+              git checkout -f FETCH_HEAD
+              python -m venv /opt/venv
+              /opt/venv/bin/pip install --no-cache-dir --upgrade pip >/dev/null
+              /opt/venv/bin/pip install --no-cache-dir . >/dev/null
+              exec ttyd --writable --port 7681 /bin/bash -lc 'export PATH=/opt/venv/bin:$PATH; cd /opt/tradingagents; tradingagents'
+          startupProbe:
+            tcpSocket:
+              port: http
+            failureThreshold: 60
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1Gi
+            limits:
+              cpu: "2"
+              memory: 4Gi

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tradingagents-terminal
+  namespace: tradingagents
+  labels:
+    app.kubernetes.io/name: tradingagents-terminal
+    app.kubernetes.io/part-of: tradingagents
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: tradingagents-terminal
+  ports:
+    - name: http
+      protocol: TCP
+      port: 7681
+      targetPort: 7681
+

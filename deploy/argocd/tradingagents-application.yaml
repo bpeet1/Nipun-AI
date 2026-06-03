@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tradingagents
+  namespace: default
+  labels:
+    app.kubernetes.io/part-of: tradingagents
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/bpeet1/Nipun-AI.git
+    targetRevision: main
+    path: deploy/tradingagents/k8s/overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tradingagents
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+

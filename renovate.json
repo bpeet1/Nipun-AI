@@ -19,7 +19,8 @@
   ],
   "kubernetes": {
     "fileMatch": [
-      "^deploy/k8s/.+\\.ya?ml$"
+      "^deploy/k8s/.+\\.ya?ml$",
+      "^deploy/tradingagents/k8s/.+\\.ya?ml$"
     ]
   },
   "packageRules": [
@@ -39,4 +40,3 @@
     }
   ]
 }
-

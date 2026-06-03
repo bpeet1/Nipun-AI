@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tradingagents-gateway
+  namespace: tradingagents
+  labels:
+    app.kubernetes.io/name: tradingagents-gateway
+    app.kubernetes.io/part-of: tradingagents
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: tradingagents-gateway
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 443
+

@@ -1,0 +1,24 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tradingagents-tls
+  namespace: tradingagents
+spec:
+  secretName: tradingagents-tls
+  duration: 2160h
+  renewBefore: 720h
+  subject:
+    organizations:
+      - TradingAgents
+  commonName: tradingagents.local
+  dnsNames:
+    - tradingagents.local
+  ipAddresses:
+    - 10.0.0.219
+  privateKey:
+    algorithm: RSA
+    size: 2048
+  issuerRef:
+    kind: Issuer
+    name: tradingagents-selfsigned
+
