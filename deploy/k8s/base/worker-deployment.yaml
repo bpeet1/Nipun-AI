@@ -26,7 +26,7 @@ spec:
               name: http
           env:
             - name: NIPUN_REPO
-              value: https://github.com/myProjectsRavi/Nipun-AI.git
+              value: https://github.com/bpeet1/Nipun-AI.git
             - name: NIPUN_REF
               value: main
             - name: ALLOWED_ORIGINS
